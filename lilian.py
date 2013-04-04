@@ -15,3 +15,15 @@ mysql_db = mysql_parms[2]
 db = MySQLdb.connect(user=mysql_username,passwd=mysql_password,db=mysql_db)
 c = db.cursor()
 
+
+def auth(user,password):
+	c.execute("select password from users where user = %s", (user))
+	results = c.fetchall()
+	if len(results) == 0:
+		return(0)
+	hashed = results[0][0]
+	if bcrypt.hashpw(password, hashed) == hashed:
+		return(1)
+	else:
+		return(0)
+		
