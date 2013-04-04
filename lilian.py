@@ -2,7 +2,7 @@ import MySQLdb
 import cgi
 import bcrypt
 
-#mysql_parms is a one line csv that is $username,$password for mysql
+#mysql_parms is a one line csv that is $username,$password,$db for mysql
 
 path_to_parms = 'db/parms.my'
 
