@@ -1,19 +1,39 @@
 import MySQLdb
 import cgi
 import bcrypt
+import time
+import os
+import sys
+import warnings
 
-#mysql_parms is a one line csv that is $username,$password,$db for mysql
+#see parms.py for parameters
 
-path_to_parms = 'db/parms.my'
+parms_directory = "/home/john/projects/lilian/"
 
-mysql_parms = open(path_to_parms,"r").read().rstrip("\n").split(",")
+sys.path.append("parms_directory")
+from parms import *
 
-mysql_username = mysql_parms[0]
-mysql_password = mysql_parms[1]
-mysql_db = mysql_parms[2]
+#set up the database connection
 
-db = MySQLdb.connect(user=mysql_username,passwd=mysql_password,db=mysql_db)
+db = MySQLdb.connect(user=db_user,passwd=db_pass,db=db_name)
 c = db.cursor()
+
+
+try:
+	open(logfile,"a")
+except IOError:
+	warnings.warn("Cannot write to specified logfile.  See parms.py for log file location.  Logging to /tmp/lilian.log", UserWarning)
+	logfile = "/tmp/lilian.log"
+	
+
+#global variables go here
+now = time.time()
+
+
+#meat and potatoes -- work gets done below here
+
+def log(message):
+	open(logfile,"a")
 
 
 def auth(user,password):
@@ -27,3 +47,12 @@ def auth(user,password):
 	else:
 		return(0)
 		
+
+def register(user,password):
+	hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+	try:
+		c.execute("insert into users (user,password,registration_date) values(%s,%s,%s)", (user,hashed,now))
+	except MySQLdb.IntegrityError:
+		return("dupe")
+		
+	return(1)
