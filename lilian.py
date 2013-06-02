@@ -8,9 +8,6 @@ import warnings
 
 #see parms.py for parameters
 
-parms_directory = "/home/john/projects/lilian/"
-
-sys.path.append("parms_directory")
 from parms import *
 
 #set up the database connection
