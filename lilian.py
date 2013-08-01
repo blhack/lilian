@@ -34,6 +34,16 @@ loglevel = 0
 
 #meat and potatoes -- work gets done below here
 
+class session():
+	
+	def __init__(self,cookie):
+		self.user = get_user(cookie)
+		if len(self.user) > 0:
+			self.auth = 1
+		else:
+			self.auth = 0
+
+
 def log(message):
 
 	#we can turn of logging if we want.  Suck it, loggers!
