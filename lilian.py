@@ -6,6 +6,7 @@ import os
 import sys
 import warnings
 import datetime
+import uuid
 
 #see parms.py for parameters
 
@@ -91,4 +92,8 @@ def register(user,password):
 		return("dupe")
 	return(1)
 
+def generate_session_id(user):
 
+	session_id = str(uuid.uuid4())
+	c.execute("insert into sessions(user,timestamp,valid,session_id) values(%s,%s,%s,%s)", (user,time.time(),'y',session_id))
+	return(session_id)
