@@ -95,5 +95,5 @@ def register(user,password):
 def generate_session_id(user):
 
 	session_id = str(uuid.uuid4())
-	c.execute("insert into sessions(user,timestamp,valid,session_id) values(%s,%s,%s,%s)", (user,time.time(),'y',session_id))
+	c.execute("insert into sessions(user,timestamp,valid,session_id) values(%s,%s,%s,%s)", (user,time.time(),1,session_id))
 	return(session_id)
