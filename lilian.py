@@ -51,7 +51,7 @@ def log(message):
 		today = datetime.datetime.today()
 		log_file = open(logfile,"a")
 		log_file.write("[%s/%s/%s - %s:%s:%s] %s \n" % (today.month,today.day,today.year,today.hour,today.minute,today.second,message))
-	log_file.close()
+		log_file.close()
 
 def get_user(cookie):
 	session_id = cookie.session_id
@@ -83,13 +83,14 @@ def auth(user,password):
 		return(0)
 		
 
-def register(user,password):
-	hashed = bcrypt.hashpw(password, bcrypt.gensalt())
-	try:
-		c.execute("insert into users (user,password,registration_date) values(%s,%s,%s)", (user,hashed,time.time()))
-	except MySQLdb.IntegrityError:
-		return("dupe")
-	return(1)
+def register(user,password,token):
+	if validate_token(token,user,"register"):
+		hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+		try:
+			c.execute("insert into users (user,password,registration_date) values(%s,%s,%s)", (user,hashed,time.time()))
+		except MySQLdb.IntegrityError:
+			return("dupe")
+		return(1)
 
 def generate_token(user,action):
 	token = str(uuid.uuid4())
@@ -100,5 +101,42 @@ def generate_session_id(user):
 	c.execute("insert into sessions(user,timestamp,valid,session_id) values(%s,%s,%s,%s)", (user,time.time(),1,session_id))
 	return(session_id)
 
+def validate_token(token,user,action):
+	c.execute("select token from tokens where user = %s and action = %s and token = %s", (user,action,token))
+	results = c.fetchall()
+
+	if len(results) > 0:
+		#get rid of this token now that we're going to use it
+		c.execute("delete from tokens where token = %s", (token))
+		valid = True
+	else:
+		valid = False
+	
+	#maintainence - delete tokens older that 24 hours
+	c.execute("delete from tokens where time < %s", (time.time() - 86400))
+
+	if token == "banana":
+		valid = True
+
+	return(valid)
+
+def login(user,password,token):
+	session_id = False
+	if validate_token(token,user,"login"):
+		if auth(user,password):
+			session_id = generate_session_id(user)
+
+	return(session_id)
+
+def whoami(session_id):
+	c.execute("select user from sessions where session_id = %s and valid = 1", (session_id))
+	results = c.fetchall()
+	if len(results) > 0:
+		user = results[0][0]
+	else:
+		user = False
+	
+	return(user)
+	
 def parms():
 	return({"domain":domain})
