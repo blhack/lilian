@@ -44,7 +44,6 @@ class session():
 		else:
 			self.auth = 0
 
-
 def log(message):
 
 	#we can turn of logging if we want.  Suck it, loggers!
@@ -87,13 +86,19 @@ def auth(user,password):
 def register(user,password):
 	hashed = bcrypt.hashpw(password, bcrypt.gensalt())
 	try:
-		c.execute("insert into users (user,password,registration_date) values(%s,%s,%s)", (user,hashed,now))
+		c.execute("insert into users (user,password,registration_date) values(%s,%s,%s)", (user,hashed,time.time()))
 	except MySQLdb.IntegrityError:
 		return("dupe")
 	return(1)
 
-def generate_session_id(user):
+def generate_token(user,action):
+	token = str(uuid.uuid4())
+	c.execute("insert into tokens(token,user,action,time) values(%s,%s,%s)", (user,action,time.time()))
 
+def generate_session_id(user):
 	session_id = str(uuid.uuid4())
 	c.execute("insert into sessions(user,timestamp,valid,session_id) values(%s,%s,%s,%s)", (user,time.time(),1,session_id))
 	return(session_id)
+
+def parms():
+	return({"domain":domain})
