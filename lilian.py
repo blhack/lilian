@@ -128,6 +128,9 @@ def login(user,password,token):
 
 	return(session_id)
 
+def logout(session_id):
+	c.execute("delete from sessions where session_id = %s limit 1", (session_id))
+
 def whoami(session_id):
 	c.execute("select user from sessions where session_id = %s and valid = 1", (session_id))
 	results = c.fetchall()

@@ -1,8 +1,5 @@
 #!/usr/bin/python
 
-import Cookie
-import os
-import time
 import cgi
 import sys
 import json
@@ -14,13 +11,12 @@ import lilian
 #what did they tell us for user and password
 
 form = cgi.FieldStorage()
-user = form.getvalue("user","")
-password = form.getvalue("password","")
-token = form.getvalue("token","")
+session_id = form.getvalue("session_id","")
+session_id = cgi.escape(session_id)
+user = lilian.whoami(session_id)
 
-session_id = lilian.login(user,password,token)
 print "Content-type:application/json"
 print
-response = {"session_id":session_id}
+response = {"user":user}
 
 print (json.JSONEncoder().encode(response))
