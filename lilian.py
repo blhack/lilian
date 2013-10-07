@@ -120,6 +120,39 @@ def validate_token(token,user,action):
 
 	return(valid)
 
+
+
+#link management things should go here
+
+def get_link_id(url):
+	c.execute("select id from objects where url = %s", (url))
+	results = c.fetchall()
+	if len(results) > 0:
+		link_id = results[0][0]
+	else:
+		link_id = 0
+
+	return(link_id)
+
+
+def submit_link(url,title,category,session_id,token):
+	
+	link_id = get_link_id(url)
+	
+	user = whoami(session_id)
+
+	if validate_token(token,user,"submit_link") and link_id == 0:
+		c.execute("insert into objects(url,title,category,user,time,status) values(%s,%s,%s,%s,%s,%s)", (url,title,category,user,time.time(),1))
+		c.execute("select LAST_INSERT_ID()")
+		results = c.fetchall()
+
+		link_id = results[0][0]
+
+	return(link_id)
+
+#user Management things should go here
+
+
 def login(user,password,token):
 	session_id = False
 	if validate_token(token,user,"login"):
