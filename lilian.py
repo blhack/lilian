@@ -124,31 +124,49 @@ def validate_token(token,user,action):
 
 #link management things should go here
 
-def get_link_id(url):
+def get_object_id(url):
 	c.execute("select id from objects where url = %s", (url))
 	results = c.fetchall()
 	if len(results) > 0:
-		link_id = results[0][0]
+		object_id = results[0][0]
 	else:
-		link_id = 0
+		object_id = 0
 
-	return(link_id)
+	return(object_id)
 
 
-def submit_link(url,title,category,session_id,token):
+def submit_object(url,title,category,session_id,token):
 	
-	link_id = get_link_id(url)
+	object_id = get_object_id(url)
 	
 	user = whoami(session_id)
 
-	if validate_token(token,user,"submit_link") and link_id == 0:
+	if validate_token(token,user,"submit_object") and object_id == 0:
 		c.execute("insert into objects(url,title,category,user,time,status) values(%s,%s,%s,%s,%s,%s)", (url,title,category,user,time.time(),1))
 		c.execute("select LAST_INSERT_ID()")
 		results = c.fetchall()
 
-		link_id = results[0][0]
+		object_id = results[0][0]
 
-	return(link_id)
+	return(object_id)
+
+
+def get_object_info(object_id):
+
+	object_info = {"url":"","title":"","category":"","user":"","time":""}
+
+	c.execute("select url,title,category,user,time from objects where id = %s", (object_id))
+	results = c.fetchall()
+	if len(results) > 0:
+		line = results[0]
+		
+		object_info = {"url":line[0],
+				 		"title":line[1],
+				 		"category":line[2],
+				 		"user":line[3],
+				 		"time":line[4],}
+	
+	return(object_info)
 
 #user Management things should go here
 
