@@ -22,3 +22,15 @@ function whoami() {
 			$("#user").text(user);
 		})
 	}
+
+function submit_link(url,title,category,token) {
+	$.post("/cgi-bin/submit_link.cgi", {"url":url,"title":title,"category":category,"token":token})
+		.done(function(data) {
+			var link_id = data["link_id"];
+			window.location("/item?" + link_id);
+		})
+	}
+
+
+
+
