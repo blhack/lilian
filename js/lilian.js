@@ -34,7 +34,10 @@ function submit_object(url,title,category,token) {
 function get_object_info(object_id) {
 	$.post("/cgi-bin/object_info.cgi", {"object_id":object_id})
 		.done(function(data) {
-			$("#link_info").text(data["url"]);
+			$("#url").text(data["url"]);
+			$("#title").text(data["title"]);
+			$("#category").text(data["category"]);
+			$("#user").text(data["user"]);
 		});
 	}
 
