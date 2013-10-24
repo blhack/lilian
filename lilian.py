@@ -191,6 +191,29 @@ def whoami(session_id):
 		user = False
 	
 	return(user)
+
+def list_objects(start=0,count=100):
+	c.execute("select * from objects where id > %s order by id desc limit %s", (start,count))
+	results = c.fetchall()
+	objects = []
+	if len(results) > 0:
+		objects = []
+		for line in results:
+			object = {"id":line[0],
+			 					"url":line[1],
+			 					"title":line[2],
+			 					"category":line[3],
+			 					"user":line[4],
+			 					"parent_id":line[5],
+			 					"comment_count":line[6],
+			 					"timestamp":line[7],
+			 					"status":line[8],
+			 					"description":line[9],
+			 					"time":line[10],
+			 					"text":line[11],
+			 					"aux":line[12]}
+			objects.append(object)
+	return(objects)
 	
 def parms():
 	return({"domain":domain})
