@@ -41,11 +41,14 @@ function get_object_info(object_id) {
 		});
 	}
 
-function populate_with_links(div,last): {
-	$.post("/cgi-bin/list_objects.cgi", {"start":last})
+function populate_with_links(div,last) {
+	$.post("/cgi-bin/list_objects.cgi", {"last":last})
 	.done(function(data) {
 		for (var link in data) {
-			$("links").append(link["url"]);
+			link = data[link]
+			console.log("Blink"); //debug
+			console.log(link);
+			$("#links").append(link["url"]);
 			}
 		})
 	}

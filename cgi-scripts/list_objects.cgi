@@ -21,6 +21,5 @@ objects = lilian.list_objects(last,100)
 
 print "Content-type:application/json"
 print
-response = {"objects":objects}
 
-print (json.JSONEncoder().encode(response))
+print (json.JSONEncoder().encode(objects))
