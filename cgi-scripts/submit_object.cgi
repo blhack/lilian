@@ -21,11 +21,11 @@ title = form.getvalue("title","")
 category = form.getvalue("category","")
 
 
-link_id = lilian.submit_object(url,title,category,session_id,token)
+object_id = lilian.submit_object(url,title,category,session_id,token)
 
 
 print "Content-type:application/json"
 print
-response = {"link_id":link_id}
+response = {"object_id":object_id}
 
 print (json.JSONEncoder().encode(response))

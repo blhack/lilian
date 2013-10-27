@@ -23,6 +23,10 @@ try:
 except IOError:
 	warnings.warn("Cannot write to specified logfile.  See parms.py for log file location.  Logging to /tmp/lilian.log", UserWarning)
 	logfile = "/tmp/lilian.log"
+	try:
+		open(logfile,"a")
+	except IOError:
+		warnings.warn("Cannot write to fallback log either.  Giving up.")
 	
 
 #global variables go here
@@ -31,7 +35,7 @@ now = time.time()
 #loglevel 0 = logging is off
 #loglevel 1 = sane logging
 #loglevel 2 = literally haliburton
-loglevel = 0
+loglevel = 1
 
 #meat and potatoes -- work gets done below here
 
@@ -140,14 +144,18 @@ def submit_object(url,title,category,session_id,token):
 	object_id = get_object_id(url)
 	
 	user = whoami(session_id)
+	object_id = 0
 
 	if validate_token(token,user,"submit_object") and object_id == 0:
 		c.execute("insert into objects(url,title,category,user,time,status) values(%s,%s,%s,%s,%s,%s)", (url,title,category,user,time.time(),1))
 		c.execute("select LAST_INSERT_ID()")
 		results = c.fetchall()
-
 		object_id = results[0][0]
+		log("Just inserted %s and gave it object id %s" % (url,object_id))
+	else:
+		log("Not submitting %s again" % (url))
 
+	log("I'm going to return %s" % (object_id))
 	return(object_id)
 
 
