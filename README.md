@@ -28,14 +28,15 @@ About the token system
 =====
 
 You don't have to use it.  If you pass token "banana", it will always return True.  This is for debugging, and you should turn it off.  To turn it off, comment out the lines that say: 
-if token == "banana": 
-	valid = True
+     
+		 if token == "banana": 
+	     valid = True
 
 After that, you will have to create a token for each user action.  This is to prevent Cross Site Request Forgery.  You should care about this, it's important.
 
 To generate a token, call:
 
-generate_token(user,action)
+lilian.generate_token(user,action)
 
 Where user is the username of the person for whom the token shoul validate.  Action is the action that they are allowed to perform with the token.  This "action" must match what is then used during validate_token(token,user,action).
 
