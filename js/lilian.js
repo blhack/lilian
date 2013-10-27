@@ -41,6 +41,15 @@ function get_object_info(object_id) {
 		});
 	}
 
+function populate_with_links(div,last): {
+	$.post("/cgi-bin/list_objects.cgi", {"start":last})
+	.done(function(data) {
+		for (var link in data) {
+			$("links").append(link["url"]);
+			}
+		})
+	}
+	
 function getParameterByName(name) {
   name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
   var regexS = "[\\?&]" + name + "=([^&#]*)";
