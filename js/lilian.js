@@ -19,7 +19,8 @@ function whoami() {
 	$.post("/cgi-bin/whoami.cgi", {"session_id":session_id})
 		.done(function(data) {
 			var user = data["user"];
-			$("#user").text(user);
+			console.log(user);
+			return(user);
 		})
 	}
 
