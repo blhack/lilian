@@ -50,6 +50,7 @@ function populate_with_links(div,last) {
 			console.log("Blink"); //debug
 			console.log(link);
 			$("#links").append(link["url"]);
+			$("#links").append("<br />");
 			}
 		})
 	}

@@ -21,7 +21,7 @@ title = form.getvalue("title","")
 category = form.getvalue("category","")
 
 
-link_id = lilian.submit_link(url,title,category,session_id,token)
+link_id = lilian.submit_object(url,title,category,session_id,token)
 
 
 print "Content-type:application/json"
